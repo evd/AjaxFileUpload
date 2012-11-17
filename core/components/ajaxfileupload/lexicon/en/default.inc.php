@@ -5,15 +5,17 @@
  * @package ajaxfileupload
  * @subpackage lexicon
  */
-$_lang['ajaxfileupload.uploadButtonText'] = 'Загрузить';
-$_lang['ajaxfileupload.dragText'] = 'Перетащите файл сюда для загрузки';
-$_lang['ajaxfileupload.cancelButtonText'] =  'Отмена';
-$_lang['ajaxfileupload.failUploadText'] =  'Ошибка загрузки';
-$_lang['ajaxfileupload.typeError'] =  '{file} имеет недопустимое расширения. Допустипые расширения: {extensions}.';
-$_lang['ajaxfileupload.sizeError'] = '{file} слишком большой, максимальный размер файла {sizeLimit}.';
-$_lang['ajaxfileupload.minSizeError'] =  '{file} слишком маленький, минимальный размер файла {minSizeLimit}.';
-$_lang['ajaxfileupload.emptyError'] = '{file} пустой, выберите файлы снова без этого файла.';
-$_lang['ajaxfileupload.noFilesError'] = 'Нет файлов для загрузки.';
-$_lang['ajaxfileupload.onLeave'] = 'Идет загрузка файлов, если вы покините, то загрузка файлов прервется.';
-$_lang['ajaxfileupload.formatProgress'] = '{percent}% из {total_size}';
-$_lang['ajaxfileupload.tooManyFilesError'] = 'Вы можете перетащить только один файл';
+$_lang['ajaxfileupload.uploadButton'] = 'Upload a file';
+$_lang['ajaxfileupload.dragZone'] = 'Drop files here to upload';
+$_lang['ajaxfileupload.cancelButton'] =  'Cancel';
+$_lang['ajaxfileupload.retryButton'] = 'Retry';
+$_lang['ajaxfileupload.failUpload'] =  'Upload failed';
+$_lang['ajaxfileupload.typeError'] =  '{file} has an invalid extension. Valid extension(s): {extensions}.';
+$_lang['ajaxfileupload.sizeError'] = '{file} is too large, maximum file size is {sizeLimit}.';
+$_lang['ajaxfileupload.minSizeError'] =  '{file} is too small, minimum file size is {minSizeLimit}.';
+$_lang['ajaxfileupload.emptyError'] = '{file} is empty, please select files again without it.';
+$_lang['ajaxfileupload.noFilesError'] = 'No files to upload.';
+$_lang['ajaxfileupload.onLeave'] = 'The files are being uploaded, if you leave now the upload will be cancelled.';
+$_lang['ajaxfileupload.formatProgress'] = '{percent}% of {total_size}';
+$_lang['ajaxfileupload.tooManyFilesError'] = 'You may only drop one file';
+$_lang['ajaxfileupload.processing'] = 'Processing...';

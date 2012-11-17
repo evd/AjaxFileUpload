@@ -10,13 +10,13 @@ class AjaxFileUpload {
 
 		$corePath = $this->modx->getOption('ajaxfileupload.core_path',null,$this->modx->getOption('core_path').'components/ajaxfileupload/');
 		$assetsUrl = $this->modx->getOption('ajaxfileupload.assets_url',null,$this->modx->getOption('assets_url').'components/ajaxfileupload/');
-		$actionUrl = $assetsUrl.'upload.php';
+		$endpointUrl = $assetsUrl.'upload.php';
 
 		$this->config = array_merge(array(
 			'assetsUrl' => $assetsUrl,
 			'cssUrl' => $assetsUrl.'css/',
 			'jsUrl' => $assetsUrl.'js/',
-			'actionUrl' => $actionUrl,
+			'endpointUrl' => $endpointUrl,
 			'corePath' => $corePath,
 			'modelPath' => $corePath.'model/',
 			'chunksPath' => $corePath.'elements/chunks/',
@@ -83,11 +83,11 @@ class AjaxFileUpload {
 	 */
 	public function process() {
 		if ($this->config['registerCSS']) {
-			$cssFile = isset($this->config['customCss'])?$this->config['customCss']:$this->config['assetsUrl'].'css/fileuploader.css';
+			$cssFile = isset($this->config['customCss'])?$this->config['customCss']:$this->config['assetsUrl'].'css/fineuploader.css';
 			$this->modx->regClientCss($cssFile);
 		}
 		if ($this->config['registerJS']) {
-			$this->modx->regClientScript($this->config['assetsUrl'].'js/web/fileuploader.js');
+			$this->modx->regClientScript($this->config['assetsUrl'].'js/web/jquery.fineuploader-3.0.min.js');
 		}
 		if (!empty($this->config['jsTpl'])) {
 			$this->modx->regClientScript($this->processJSTpl(), true);
@@ -114,14 +114,14 @@ class AjaxFileUpload {
 
 		//Assign params for connector
 		$params = $this->buildRequestParams($this->config);
-		$this->config['actionParams'] = $this->modx->toJSON($params);
+		$this->config['requestParams'] = $this->modx->toJSON($params);
 
 		return $this->getChunk($this->config['jsTpl'], $this->config);
 	}
 
 	private function buildRequestParams($properties = array()) {
 		$params = array(
-			'id' => $properties['allowedExtensions'],
+			'id' => $properties['id'],
 			'allowedExtensions' => $properties['allowedExtensions'],
 			'sizeLimit'	=> $properties['sizeLimit'],
 			'uploadPath' => $properties['uploadPath']
@@ -143,7 +143,7 @@ class AjaxFileUpload {
 			return array('error'=>$this->modx->lexicon('ajaxfileupload.access_denied'));
 		}
 		$this->config = array_merge($this->config, $params);
-		require_once $this->config['modelPath'].'/fileuploader/fileuploader.php';
+		require_once $this->config['modelPath'].'/fineuploader/fineuploader.php';
 		$allowedExtensions = explode(',', $this->config['allowedExtensions']);
 		$allowedExtensions = array_map('trim',$allowedExtensions);
 		$uploader = new qqFileUploader($allowedExtensions, $this->config['sizeLimit']);

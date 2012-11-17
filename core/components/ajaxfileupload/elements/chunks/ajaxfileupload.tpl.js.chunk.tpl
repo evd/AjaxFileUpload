@@ -1,31 +1,34 @@
 <script type="text/javascript">
-function createUploader() {
-  var thumbnailuploader = new qq.FileUploader({
-    element: document.getElementById("[[+id]]"),
-    action: "[[+actionUrl]]",
+$(document).ready(function() {
+  $("#[[+id]]").fineUploader({
+    request: {
+      endpoint: "[[+endpointUrl]]",
+      params: [[+requestParams]],
+    },
     multiple: [[+multiple]],
-    params: [[+actionParams]],
-    allowedExtensions: [[+allowedExtensionsArray]],
-    sizeLimit: [[+sizeLimit]],
     maxConnections: [[+maxConnections]],
-    uploadButtonText: "[[%ajaxfileupload.uploadButtonText]]",
-    dragText: "[[%ajaxfileupload.dragText]]",
-    cancelButtonText: "[[%ajaxfileupload.cancelButtonText]]",
-    failUploadText: "[[%ajaxfileupload.failUploadText]]",
+    validation: {
+      allowedExtensions: [[+allowedExtensionsArray]],
+      sizeLimit: [[+sizeLimit]],
+    },
+    text: {
+      uploadButton: "[[%ajaxfileupload.uploadButton]]",
+      dragZone: "[[%ajaxfileupload.dragZone]]",
+      cancelButton: "[[%ajaxfileupload.cancelButton]]",
+      retryButton: "[[%ajaxfileupload.retryButton]]",
+      failUpload: "[[%ajaxfileupload.failUploadText]]",
+      formatProgress: "[[%ajaxfileupload.formatProgress]]",
+      waitingForResponse: "[[%ajaxfileupload.processing]]"
+    },
     messages: {
       typeError: "[[%ajaxfileupload.typeError]]",
       sizeError: "[[%ajaxfileupload.sizeError]]",
       minSizeError: "[[%ajaxfileupload.minSizeError]]",
       emptyError: "[[%ajaxfileupload.emptyError]]",
       noFilesError: "[[%ajaxfileupload.noFilesError]]",
-      onLeave: "[[%ajaxfileupload.onLeave]]"
-    },
-    extraMessages: {
-      formatProgress: "[[%ajaxfileupload.formatProgress]]",
+      onLeave: "[[%ajaxfileupload.onLeave]]",
       tooManyFilesError: "[[%ajaxfileupload.tooManyFilesError]]"
     }
   });
-}
-
-window.onload = createUploader;
+});
 </script>
