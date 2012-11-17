@@ -26,8 +26,8 @@ class AjaxFileUpload {
 
 			'id' => 'ajaxfileupload',
 			'uploadPath' => '',
-			'allowedExtensions' => 'jpg,jpeg,png,gif',
-			'sizeLimit' => 512000,
+			'allowedExtensions' => $modx->getOption('upload_files'),
+			'sizeLimit' => $modx->getOption('upload_maxsize'),
 			'multiple' => true,
 			'maxConnections' => 3,
 			'registerCSS' => true,
@@ -190,9 +190,6 @@ class AjaxFileUpload {
 		$allowedExtensions = array_map('trim',$allowedExtensions);
 		$uploader = new qqFileUploader($allowedExtensions, $this->config['sizeLimit']);
 
-		//Path must ends with separator
-		$this->config['uploadPath'] = rtrim($this->config['uploadPath'],'/').'/';
-
 		//If we change upload filename by sanitize or in event, so change it
 		$_GET['qqfile'] = $this->config['qqfile'];
 
@@ -235,18 +232,23 @@ class AjaxFileUpload {
 	}
 
 	/**
-	 * Convert relative path to abslolute
+	 * Get path from config, convert relative path to abslolute
 	 *
 	 * @access private
 	 * @param $path The path for check and convert
 	 * @return string converted path
 	 */
 	private function processPath($path = '') {
+		//Get path from modx config, if exists, else path from request var or event
+		$path = $this->modx->getOption('ajaxfileupload.'.$this->config['id'].'_upload_path', null, $path);
+
 		if (sizeof($path)>0) {
 			if ($path[0]!='/')
 				//Path relative, add base path
 				$path = $this->modx->getOption('base_path').$path;
 		}
+		//Path must ends with separator
+		$path = rtrim($path,'/').'/';
 		return $path;
 	}
 
