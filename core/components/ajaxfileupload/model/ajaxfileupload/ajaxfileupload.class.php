@@ -146,11 +146,39 @@ class AjaxFileUpload {
 			return array('error'=>$this->modx->lexicon('ajaxfileupload.access_denied'));
 		}
 		$this->config = array_merge($this->config, $params);
+
+		//May override config in event
+		$this->invokeBeforeUploadEvent();
+
 		require_once $this->config['modelPath'].'/fineuploader/fineuploader.php';
 		$allowedExtensions = explode(',', $this->config['allowedExtensions']);
 		$allowedExtensions = array_map('trim',$allowedExtensions);
 		$uploader = new qqFileUploader($allowedExtensions, $this->config['sizeLimit']);
-		$result = $uploader->handleUpload($this->modx->getOption('base_path').$this->config['uploadPath']);
-		return $result;
+		$this->config['result'] = $uploader->handleUpload($this->modx->getOption('base_path').$this->config['uploadPath']);
+
+		//May override result in event
+		$this->invokeAfterUploadEvent();
+
+		return $this->config['result'];
 	}
+
+	private function invokeBeforeUploadEvent() {
+		$eventResults = $this->modx->invokeEvent('OnBeforeAjaxFileUpload', $this->config);
+		if (!empty($eventResults)) {
+			foreach($eventResults as $eventResult) {
+				$this->config = array_merge($this->config, $eventResult);
+			}
+		}
+	}
+
+	private function invokeAfterUploadEvent() {
+		$eventResults = $this->modx->invokeEvent('OnAfterAjaxFileUpload', $this->config);
+		if (!empty($eventResults)) {
+			foreach($eventResults as $eventResult) {
+				$this->config['result'] = array_merge($this->config['result'], $eventResult);
+			}
+		}
+	}
+
+
 }
