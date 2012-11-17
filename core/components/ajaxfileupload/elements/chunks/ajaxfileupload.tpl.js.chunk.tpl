@@ -16,7 +16,7 @@ $(document).ready(function() {
       dragZone: "[[%ajaxfileupload.dragZone]]",
       cancelButton: "[[%ajaxfileupload.cancelButton]]",
       retryButton: "[[%ajaxfileupload.retryButton]]",
-      failUpload: "[[%ajaxfileupload.failUploadText]]",
+      failUpload: "[[%ajaxfileupload.failUpload]]",
       formatProgress: "[[%ajaxfileupload.formatProgress]]",
       waitingForResponse: "[[%ajaxfileupload.processing]]"
     },

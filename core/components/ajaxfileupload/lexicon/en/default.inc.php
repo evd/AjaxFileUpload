@@ -19,3 +19,4 @@ $_lang['ajaxfileupload.onLeave'] = 'The files are being uploaded, if you leave n
 $_lang['ajaxfileupload.formatProgress'] = '{percent}% of {total_size}';
 $_lang['ajaxfileupload.tooManyFilesError'] = 'You may only drop one file';
 $_lang['ajaxfileupload.processing'] = 'Processing...';
+$_lang['ajaxfileupload.access_denied'] = 'Access denied';
