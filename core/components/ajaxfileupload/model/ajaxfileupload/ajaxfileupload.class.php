@@ -33,7 +33,9 @@ class AjaxFileUpload {
 			'registerCSS' => true,
 			'registerJS' => true,
 			'uploadTpl' => 'tpl.ajaxfileupload.upload',
-			'jsTpl' => 'tpl.ajaxfileupload.js'
+			'jsTpl' => 'tpl.ajaxfileupload.js',
+			'toPlaceholder' => false,
+			'placeholderName' => 'ajaxfileupload.upload'
 		),$config);
 
         $lang = isset($this->config['lang']) ? $this->config['lang'] . ':' : '';
@@ -93,7 +95,11 @@ class AjaxFileUpload {
 			$this->modx->regClientScript($this->processJSTpl(), true);
 		}
 		$output = $this->getChunk($this->config['uploadTpl'], $this->config);
-		//return '<div id="ajaxfileupload"></div>';
+
+		if ($this->config['toPlaceholder']) {
+			$this->modx->setPlaceholder($this->config['placeholderName'], $output);
+			$output = '';
+		}
 		return $output;
 	}
 
@@ -183,6 +189,10 @@ class AjaxFileUpload {
 
 		//May override config in event
 		$this->invokeBeforeUploadEvent();
+		if (isset($this->config['result'])) {
+			//Event mark that something wrong, cancel upload file
+			return $this->config['result'];
+		}
 
 
 		require_once $this->config['modelPath'].'/fineuploader/fineuploader.php';
