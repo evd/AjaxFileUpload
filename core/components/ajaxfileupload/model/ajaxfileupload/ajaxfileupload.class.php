@@ -98,10 +98,10 @@ class AjaxFileUpload {
 	}
 
 	/**
-	 * Process JS template
+	 * Process JS template chunk
 	 *
 	 * @access private
-	 * @return string result of snippet
+	 * @return string result of processed chunk
 	 */
 	private function processJSTpl() {
 		//Make allowedExtension for JS in array format
@@ -137,7 +137,7 @@ class AjaxFileUpload {
 	 * Handle file upload
 	 *
 	 * @access public
-	 * @return array
+	 * @return array The result of upload operation
 	 */
 	public function handleUpload() {
 		$params = $this->buildRequestParams($_REQUEST);
@@ -147,14 +147,20 @@ class AjaxFileUpload {
 		}
 		$this->config = array_merge($this->config, $params);
 
+
 		//May override config in event
 		$this->invokeBeforeUploadEvent();
+
 
 		require_once $this->config['modelPath'].'/fineuploader/fineuploader.php';
 		$allowedExtensions = explode(',', $this->config['allowedExtensions']);
 		$allowedExtensions = array_map('trim',$allowedExtensions);
 		$uploader = new qqFileUploader($allowedExtensions, $this->config['sizeLimit']);
-		$this->config['result'] = $uploader->handleUpload($this->modx->getOption('base_path').$this->config['uploadPath']);
+
+		//Path must ends with separator
+		$this->config['uploadPath'] = rtrim($this->config['uploadPath'],'/').'/';
+
+		$this->config['result'] = $uploader->handleUpload($this->processPath($this->config['uploadPath']));
 
 		//May override result in event
 		$this->invokeAfterUploadEvent();
@@ -192,5 +198,19 @@ class AjaxFileUpload {
 		}
 	}
 
-
+	/**
+	 * Convert relative path to abslolute
+	 *
+	 * @access private
+	 * @param $path The path for check and convert
+	 * @return string converted path
+	 */
+	private function processPath($path = '') {
+		if (sizeof($path)>0) {
+			if ($path[0]!='/')
+				//Path relative, add base path
+				$path = $this->modx->getOption('base_path').$path;
+		}
+		return $path;
+	}
 }
