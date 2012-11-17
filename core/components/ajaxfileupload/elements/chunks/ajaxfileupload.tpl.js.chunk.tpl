@@ -3,13 +3,13 @@ $(document).ready(function() {
   $("#[[+id]]").fineUploader({
     request: {
       endpoint: "[[+endpointUrl]]",
-      params: [[+requestParams]],
+      params: [[+requestParams]]
     },
     multiple: [[+multiple]],
     maxConnections: [[+maxConnections]],
     validation: {
       allowedExtensions: [[+allowedExtensionsArray]],
-      sizeLimit: [[+sizeLimit]],
+      sizeLimit: [[+sizeLimit]]
     },
     text: {
       uploadButton: "[[%ajaxfileupload.uploadButton]]",
