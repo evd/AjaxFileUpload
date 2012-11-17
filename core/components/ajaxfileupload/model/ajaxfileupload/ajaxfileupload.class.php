@@ -127,6 +127,9 @@ class AjaxFileUpload {
 			'uploadPath' => $properties['uploadPath']
 		);
 		$params['hash'] = md5(implode('|', $params).'|'.$this->modx->getOption('ajaxfileupload.secret_key',null,'secret'));
+		if (isset($this->config['requestParams'])) {
+			$params = array_merge($this->modx->fromJSON($this->config['requestParams']), $params);
+		}
 		return $params;
 	}
 
