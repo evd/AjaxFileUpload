@@ -162,6 +162,12 @@ class AjaxFileUpload {
 		return $this->config['result'];
 	}
 
+	/**
+	 * Invoke OnBeforeAjaxUploadEvent
+	 * Event may override config params
+	 *
+	 * @access private
+	 */
 	private function invokeBeforeUploadEvent() {
 		$eventResults = $this->modx->invokeEvent('OnBeforeAjaxFileUpload', $this->config);
 		if (!empty($eventResults)) {
@@ -171,6 +177,12 @@ class AjaxFileUpload {
 		}
 	}
 
+	/**
+	 * Invoke OnAfterAjaxUploadEvent
+	 * Event may override result
+	 *
+	 * @access private
+	 */
 	private function invokeAfterUploadEvent() {
 		$eventResults = $this->modx->invokeEvent('OnAfterAjaxFileUpload', $this->config);
 		if (!empty($eventResults)) {
