@@ -95,10 +95,11 @@ class qqFileUploader {
         
         $this->checkServerSettings();       
 
-        if (isset($_GET['qqfile'])) {
-            $this->file = new qqUploadedFileXhr();
-        } elseif (isset($_FILES['qqfile'])) {
+        if (isset($_FILES['qqfile'])) {
             $this->file = new qqUploadedFileForm();
+        }
+        elseif (isset($_GET['qqfile'])) {
+            $this->file = new qqUploadedFileXhr();
         } else {
             $this->file = false; 
         }
