@@ -33,7 +33,7 @@ class AjaxFileUpload {
 			'registerCSS' => true,
 			'registerJS' => true,
 			'uploadTpl' => 'tpl.ajaxfileupload.upload',
-			'jsTpl' => 'tpl.ajaxfileupload.js',
+			'jsTpl' => 'tpl.ajaxfileupload.js'
 		),$config);
 
         $lang = isset($this->config['lang']) ? $this->config['lang'] . ':' : '';
@@ -104,7 +104,7 @@ class AjaxFileUpload {
 	 * @return string result of processed chunk
 	 */
 	private function processJSTpl() {
-		//Make allowedExtension for JS in array format
+		//Make allowedExtensionArray for JS in array format
 		$allowedExtensions = array();
 		if (!empty($this->config['allowedExtensions'])) {
 			$allowedExtensions = explode(',', $this->config['allowedExtensions']);
@@ -112,24 +112,55 @@ class AjaxFileUpload {
 			$this->config['allowedExtensionsArray'] = '["' . implode('","', $allowedExtensions) . '"]';
 		}
 
-		//Assign params for connector
-		$params = $this->buildRequestParams($this->config);
+		//Build request params for connector
+		$params = $this->calcHash($this->getRequestParamsFromConfig());
 		$this->config['requestParams'] = $this->modx->toJSON($params);
 
 		return $this->getChunk($this->config['jsTpl'], $this->config);
 	}
 
-	private function buildRequestParams($properties = array()) {
+	/**
+	 * Pick paramaters for request from config
+	 *
+	 * @access private
+	 * @return array The request params
+	 */
+	private function getRequestParamsFromConfig() {
 		$params = array(
-			'id' => $properties['id'],
-			'allowedExtensions' => $properties['allowedExtensions'],
-			'sizeLimit'	=> $properties['sizeLimit'],
-			'uploadPath' => $properties['uploadPath']
+			'id' => $this->config['id'],
+			'allowedExtensions' => $this->config['allowedExtensions'],
+			'sizeLimit'	=> $this->config['sizeLimit'],
+			'uploadPath' => $this->config['uploadPath']
 		);
-		$params['hash'] = md5(implode('|', $params).'|'.$this->modx->getOption('ajaxfileupload.secret_key',null,'secret'));
 		if (isset($this->config['requestParams'])) {
 			$params = array_merge($this->modx->fromJSON($this->config['requestParams']), $params);
 		}
+		return $params;
+	}
+
+
+	/**
+	 * Pick paramaters from request
+	 *
+	 * @access private
+	 * @return array The request params
+	 */
+	private function getRequestParamsFromRequest() {
+		$params = $_GET;
+		//Hash calculated without this parameters, so unset it
+		unset($params['qqfile']);
+		unset($params['hash']);
+		return $params;
+	}
+
+	/**
+	 * Calculate hash for request params
+	 *
+	 * @access private
+	 * @return array The request params
+	 */
+	private function calcHash($params = array()) {
+		$params['hash'] = md5(implode('|', $params).'|'.$this->modx->getOption('ajaxfileupload.secret_key',null,'secret'));
 		return $params;
 	}
 
@@ -140,13 +171,15 @@ class AjaxFileUpload {
 	 * @return array The result of upload operation
 	 */
 	public function handleUpload() {
-		$params = $this->buildRequestParams($_REQUEST);
+		$params = $this->calcHash($this->getRequestParamsFromRequest());
 		//We check hash, so additional sanitize don't required??
 		if ($_REQUEST['hash']!=$params['hash']) {
 			return array('error'=>$this->modx->lexicon('ajaxfileupload.access_denied'));
 		}
 		$this->config = array_merge($this->config, $params);
 
+		//Assing to config for possible modification in event
+		$this->config['qqfile'] = $this->sanitizeFilename($_GET['qqfile']);
 
 		//May override config in event
 		$this->invokeBeforeUploadEvent();
@@ -159,6 +192,9 @@ class AjaxFileUpload {
 
 		//Path must ends with separator
 		$this->config['uploadPath'] = rtrim($this->config['uploadPath'],'/').'/';
+
+		//If we change upload filename by sanitize or in event, so change it
+		$_GET['qqfile'] = $this->config['qqfile'];
 
 		$this->config['result'] = $uploader->handleUpload($this->processPath($this->config['uploadPath']));
 
@@ -212,5 +248,16 @@ class AjaxFileUpload {
 				$path = $this->modx->getOption('base_path').$path;
 		}
 		return $path;
+	}
+
+	/**
+	 * Sanitize filename
+	 *
+	 * @access private
+	 * @param $file The filename for sanitize
+	 * @return string sanitized filename
+	 */
+	private function sanitizeFilename($filename) {
+		return preg_replace("/([^\w\s\d\-_\.]|[\.]{2,})/", '', $filename);
 	}
 }
