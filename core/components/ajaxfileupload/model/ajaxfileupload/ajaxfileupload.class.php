@@ -221,7 +221,8 @@ class AjaxFileUpload {
 		$eventResults = $this->modx->invokeEvent('OnBeforeAjaxFileUpload', $this->config);
 		if (!empty($eventResults)) {
 			foreach($eventResults as $eventResult) {
-				$this->config = array_merge($this->config, $eventResult);
+				if (is_array($eventResult))
+					$this->config = array_merge($this->config, $eventResult);
 			}
 		}
 	}
@@ -236,7 +237,8 @@ class AjaxFileUpload {
 		$eventResults = $this->modx->invokeEvent('OnAfterAjaxFileUpload', $this->config);
 		if (!empty($eventResults)) {
 			foreach($eventResults as $eventResult) {
-				$this->config['result'] = array_merge($this->config['result'], $eventResult);
+				if (is_array($eventResult))
+					$this->config['result'] = array_merge($this->config['result'], $eventResult);
 			}
 		}
 	}
