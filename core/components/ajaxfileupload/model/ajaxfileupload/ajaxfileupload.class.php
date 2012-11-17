@@ -185,7 +185,7 @@ class AjaxFileUpload {
 		$this->config = array_merge($this->config, $params);
 
 		//Assing to config for possible modification in event
-		$this->config['qqfile'] = $this->sanitizeFilename($_GET['qqfile']);
+		$this->config['qqfile'] = $this->sanitizeFilename();
 
 		//May override config in event
 		$this->invokeBeforeUploadEvent();
@@ -201,7 +201,10 @@ class AjaxFileUpload {
 		$uploader = new qqFileUploader($allowedExtensions, $this->config['sizeLimit']);
 
 		//If we change upload filename by sanitize or in event, so change it
-		$_GET['qqfile'] = $this->config['qqfile'];
+		if (isset($_FILES['qqfile']))
+			$_FILES['qqfile']['name'] = $this->config['qqfile'];
+		else
+			$_GET['qqfile'] = $this->config['qqfile'];
 
 		$this->config['result'] = $uploader->handleUpload($this->processPath($this->config['uploadPath']));
 
@@ -271,7 +274,12 @@ class AjaxFileUpload {
 	 * @param $file The filename for sanitize
 	 * @return string sanitized filename
 	 */
-	private function sanitizeFilename($filename) {
-		return preg_replace("/([^\w\s\d\-_\.]|[\.]{2,})/", '', $filename);
+	private function sanitizeFilename() {
+		if (isset($_FILES['qqfile']))
+			$filename = $_FILES['qqfile']['name'];
+		else
+			$filename = $_GET['qqfile'];
+		$filename = preg_replace("/([^\w\s\d\-_\.]|[\.]{2,})/", '', $filename);
+		return $filename;
 	}
 }
