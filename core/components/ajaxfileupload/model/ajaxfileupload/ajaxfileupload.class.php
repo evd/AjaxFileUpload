@@ -31,8 +31,8 @@ class AjaxFileUpload {
 			'addToRequestParams' => 'id, allowedExtensions, sizeLimit, uploadPath',
 			'cssFile' => $assetsUrl.'css/fineuploader.css',
 			'jsFile' => $assetsUrl.'js/web/jquery.fineuploader-3.0.min.js',
-			'uploadTpl' => 'tpl.ajaxfileupload.upload',
-			'jsTpl' => 'tpl.ajaxfileupload.js',
+			'uploadTpl' => 'ajaxfileupload.tpl.upload',
+			'jsTpl' => 'ajaxfileupload.tpl.js',
 			'toPlaceholder' => false,
 			'placeholderPrefix' => 'ajaxfileupload.tpl.'
 		),$config);
