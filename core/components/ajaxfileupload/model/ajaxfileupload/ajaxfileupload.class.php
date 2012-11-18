@@ -28,6 +28,7 @@ class AjaxFileUpload {
 			'multiple' => true,
 			'maxConnections' => 3,
 			'actions' => 'registerCSS, registerJS, registerJSTpl, outputUploadTpl, outputJSTpl',
+			'addToRequestParams' => 'id, allowedExtensions, sizeLimit, uploadPath',
 			'cssFile' => $assetsUrl.'css/fineuploader.css',
 			'jsFile' => $assetsUrl.'js/web/jquery.fineuploader-3.0.min.js',
 			'uploadTpl' => 'tpl.ajaxfileupload.upload',
@@ -141,14 +142,11 @@ class AjaxFileUpload {
 	 * @return array The request params
 	 */
 	private function getRequestParamsFromConfig() {
-		$params = array(
-			'id' => $this->config['id'],
-			'allowedExtensions' => $this->config['allowedExtensions'],
-			'sizeLimit'	=> $this->config['sizeLimit'],
-			'uploadPath' => $this->config['uploadPath']
-		);
+		$addParams = explode(',', $this->config['addToRequestParams']);
+		$addParams = array_map('trim', $addParams);
+		$params = array_intersect_key($this->config, array_flip($addParams));
 		if (isset($this->config['requestParams'])) {
-			$params = array_merge($this->modx->fromJSON($this->config['requestParams']), $params);
+			$params = array_merge($params, $this->modx->fromJSON($this->config['requestParams']));
 		}
 		return $params;
 	}
@@ -263,8 +261,10 @@ class AjaxFileUpload {
 	 * @return string converted path
 	 */
 	private function processPath($path = '') {
-		//Get path from modx config, if exists, else path from request var or event
-		$path = $this->modx->getOption('ajaxfileupload.'.$this->config['id'].'_upload_path', null, $path);
+		if (empty($path)) {
+			//Get path from config
+			$path = $this->modx->getOption('ajaxfileupload.'.$this->config['id'].'_upload_path', null, $path);
+		}
 
 		if (sizeof($path)>0) {
 			if ($path[0]!='/')
