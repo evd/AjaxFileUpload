@@ -16,26 +16,24 @@ class AjaxFileUpload {
 			'assetsUrl' => $assetsUrl,
 			'cssUrl' => $assetsUrl.'css/',
 			'jsUrl' => $assetsUrl.'js/',
-			'endpointUrl' => $endpointUrl,
 			'corePath' => $corePath,
 			'modelPath' => $corePath.'model/',
-			'chunksPath' => $corePath.'elements/chunks/',
-			'chunkSuffix' => '.chunk.tpl',
-			'snippetsPath' => $corePath.'elements/snippets/',
 			'processorsPath' => $corePath.'processors/',
 
 			'id' => 'ajaxfileupload',
+			'endpointUrl' => $endpointUrl,
 			'uploadPath' => '',
 			'allowedExtensions' => $modx->getOption('upload_files'),
 			'sizeLimit' => $modx->getOption('upload_maxsize'),
 			'multiple' => true,
 			'maxConnections' => 3,
-			'registerCSS' => true,
-			'registerJS' => true,
+			'actions' => 'registerCSS, registerJS, registerJSTpl, outputUploadTpl, outputJSTpl',
+			'cssFile' => $assetsUrl.'css/fineuploader.css',
+			'jsFile' => $assetsUrl.'js/web/jquery.fineuploader-3.0.min.js',
 			'uploadTpl' => 'tpl.ajaxfileupload.upload',
 			'jsTpl' => 'tpl.ajaxfileupload.js',
 			'toPlaceholder' => false,
-			'placeholderName' => 'ajaxfileupload.upload'
+			'placeholderPrefix' => 'ajaxfileupload.tpl.'
 		),$config);
 
         $lang = isset($this->config['lang']) ? $this->config['lang'] . ':' : '';
@@ -84,21 +82,32 @@ class AjaxFileUpload {
 	 * @return string result of snippet
 	 */
 	public function process() {
-		if ($this->config['registerCSS']) {
-			$cssFile = isset($this->config['customCss'])?$this->config['customCss']:$this->config['assetsUrl'].'css/fineuploader.css';
-			$this->modx->regClientCss($cssFile);
+		$actions = explode(',', $this->config['actions']);
+		$actions = array_map('trim', $actions);
+		$output = '';
+		if (in_array('registerCSS', $actions)) {
+			$this->modx->regClientCss($this->config['cssFile']);
 		}
-		if ($this->config['registerJS']) {
-			$this->modx->regClientScript($this->config['assetsUrl'].'js/web/jquery.fineuploader-3.0.min.js');
+		if (in_array('registerJS', $actions)) {
+			$this->modx->regClientStartupScript($this->config['jsFile']);
 		}
-		if (!empty($this->config['jsTpl'])) {
-			$this->modx->regClientScript($this->processJSTpl(), true);
+		if ((in_array('registerJSTpl', $actions) || in_array('outputJSTpl', $actions)) && !empty($this->config['jsTpl'])) {
+			$tpl = $this->processJSTpl();
+			if (in_array('registerJSTpl', $actions))
+				$this->modx->regClientScript($tpl, true);
+			elseif (in_array('outputJSTpl', $actions)) {
+				if ($this->config['toPlaceholder'])
+					$this->modx->setPlaceholder($this->config['placeholderPrefix'].'js', $tpl);
+				else
+					$output.=$tpl;
+			}
 		}
-		$output = $this->getChunk($this->config['uploadTpl'], $this->config);
-
-		if ($this->config['toPlaceholder']) {
-			$this->modx->setPlaceholder($this->config['placeholderName'], $output);
-			$output = '';
+		if (in_array('outputUploadTpl', $actions) && !empty($this->config['uploadTpl'])) {
+			$tpl = $this->getChunk($this->config['uploadTpl'], $this->config);
+			if ($this->config['toPlaceholder'])
+				$this->modx->setPlaceholder($this->config['placeholderPrefix'].'upload', $tpl);
+			else
+				$output.=$tpl;
 		}
 		return $output;
 	}
