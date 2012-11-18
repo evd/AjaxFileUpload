@@ -20,3 +20,5 @@ $_lang['ajaxfileupload.formatProgress'] = '{percent}% of {total_size}';
 $_lang['ajaxfileupload.tooManyFilesError'] = 'You may only drop one file';
 $_lang['ajaxfileupload.processing'] = 'Processing...';
 $_lang['ajaxfileupload.access_denied'] = 'Access denied';
+$_lang['setting_ajaxfileupload.secret_key'] = 'Secret key';
+$_lang['setting_ajaxfileupload.secret_key_desc'] = 'Required to generate hash for request parameters';

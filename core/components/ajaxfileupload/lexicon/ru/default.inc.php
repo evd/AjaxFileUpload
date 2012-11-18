@@ -20,3 +20,5 @@ $_lang['ajaxfileupload.formatProgress'] = '{percent}% из {total_size}';
 $_lang['ajaxfileupload.tooManyFilesError'] = 'Вы можете перетащить только один файл';
 $_lang['ajaxfileupload.processing'] = 'Идет обработка...';
 $_lang['ajaxfileupload.access_denied'] = 'Доступ запрещен';
+$_lang['setting_ajaxfileupload.secret_key'] = 'Секретный ключ';
+$_lang['setting_ajaxfileupload.secret_key_desc'] = 'Необходим при генерации хэша для параметров передаваемых в запросе';
