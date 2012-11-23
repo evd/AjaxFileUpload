@@ -266,7 +266,7 @@ class AjaxFileUpload {
 			$path = $this->modx->getOption('ajaxfileupload.'.$this->config['id'].'_upload_path', null, $path);
 		}
 
-		if (sizeof($path)>0) {
+		if (strlen($path)>0) {
 			if ($path[0]!='/')
 				//Path relative, add base path
 				$path = $this->modx->getOption('base_path').$path;
