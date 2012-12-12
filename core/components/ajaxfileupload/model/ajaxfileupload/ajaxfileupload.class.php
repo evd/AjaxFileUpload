@@ -186,7 +186,7 @@ class AjaxFileUpload {
 	public function handleUpload() {
 		$params = $this->calcHash($this->getRequestParamsFromRequest());
 		//We check hash, so additional sanitize don't required??
-		if ($_REQUEST['hash']!=$params['hash']) {
+		if (!isset($_REQUEST['hash']) || $_REQUEST['hash']!=$params['hash']) {
 			return array('error'=>$this->modx->lexicon('ajaxfileupload.access_denied'));
 		}
 		$this->config = array_merge($this->config, $params);
