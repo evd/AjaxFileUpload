@@ -27,7 +27,7 @@ class AjaxFileUpload {
 			'sizeLimit' => $modx->getOption('upload_maxsize'),
 			'multiple' => true,
 			'maxConnections' => 3,
-			'actions' => 'registerCSS, registerJS, registerJSTpl, outputUploadTpl, outputJSTpl',
+			'actions' => 'registerCSS, registerJS, registerJSTpl, outputUploadTpl',
 			'addToRequestParams' => 'id, allowedExtensions, sizeLimit, uploadPath',
 			'cssFile' => $assetsUrl.'css/fineuploader.css',
 			'jsFile' => $assetsUrl.'js/web/jquery.fineuploader-3.0.min.js',
